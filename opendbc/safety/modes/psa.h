@@ -176,11 +176,11 @@ static safety_config psa_init(uint16_t param) {
     {PSA_HS2_DYN_MDD_ETAT_2F6, PSA_ADAS_BUS, 8, .check_relay = false},   // radar emulation
   };
 
-  static const RxCheck psa_rx_checks[] = {
+  static RxCheck psa_rx_checks[] = {
     PSA_RX_CHECKS(PSA_MAIN_BUS)
   };
 
-  static const RxCheck psa_eps_cam_rx_checks[] = {
+  static RxCheck psa_eps_cam_rx_checks[] = {
     PSA_RX_CHECKS(PSA_CAM_BUS)
   };
 
