@@ -12,14 +12,15 @@ RADAR_TIMEOUT_FRAMES = 6
 ACC_TORQUE_LOST_FRAMES = 100
 
 class CarState(CarStateBase):
-  def __init__(self, CP):
-    super().__init__(CP)
+  def __init__(self, CP, CP_SP):
+    super().__init__(CP, CP_SP)
     self.radar_alive = False
     self.radar_ts_last = 0
     self.radar_stale_frames = 0
     self.acc_torque_lost_frames = 0
 
-  def update(self, can_parsers) -> structs.CarState:
+  def update(self, can_parsers) -> tuple[structs.CarState, structs.CarStateSP]:
+    ret_sp = structs.CarStateSP()
     cp = can_parsers[Bus.main]
     cp_adas = can_parsers[Bus.adas]
     cp_cam = can_parsers[Bus.cam]
@@ -91,10 +92,10 @@ class CarState(CarStateBase):
     # lock info
     ret.doorOpen = any((cp_cam.vl['Dat_BSI']['DRIVER_DOOR'], cp_cam.vl['Dat_BSI']['PASSENGER_DOOR']))
     ret.seatbeltUnlatched = cp_cam.vl['RESTRAINTS']['DRIVER_SEATBELT'] != 2
-    return ret
+    return ret, ret_sp
 
   @staticmethod
-  def get_can_parsers(CP):
+  def get_can_parsers(CP, CP_SP):
     return {
       Bus.main: CANParser(DBC[CP.carFingerprint][Bus.pt], [], 0),
       # the radar is silent with openpilot long

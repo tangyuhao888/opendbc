@@ -27,8 +27,8 @@ def get_safety_CP():
 
 
 class CarController(CarControllerBase):
-  def __init__(self, dbc_names, CP):
-    super().__init__(dbc_names, CP)
+  def __init__(self, dbc_names, CP, CP_SP):
+    super().__init__(dbc_names, CP, CP_SP)
     self.packer = CANPacker(dbc_names[Bus.main])
     self.VM = VehicleModel(get_safety_CP())
     self.apply_angle_last = 0
@@ -40,7 +40,7 @@ class CarController(CarControllerBase):
     self.pitch = FirstOrderFilter(0., 1.0, DT_CTRL)
     self.torque_last = None
 
-  def update(self, CC, CS, now_nanos):
+  def update(self, CC, CC_SP, CS, now_nanos):
     can_sends = []
     actuators = CC.actuators
     if len(CC.orientationNED) == 3:
